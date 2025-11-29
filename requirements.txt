@@ -1,0 +1,10 @@
+google-generativeai>=0.8.3
+python-dotenv
+yt-dlp
+opencv-python
+asyncio
+rich
+pandas
+scikit-learn
+flask
+flask-cors
