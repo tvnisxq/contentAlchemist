@@ -6,13 +6,19 @@ Content Alchemist represents a sophisticated, autonomous framework designed to m
 
 ## Project Dashboard
 
-![Project Banner](assets/UI.jpeg)
-
 The interface is designed with a minimalist "Paper & Ink" aesthetic to facilitate the efficient management of content generation processes.
+
+![Project Banner](assets/BlogPost.jpeg)
+
+It automatically generates content for LinkedIn and X(formerly Twitter) in the desired tone.
+Perfectly configured for generating content for these social media platforms
+
+![Project Banner](assets/socialPost.jpeg)
+
+The system automatically extracts visual keyframes and synthesizes a comprehensive content brief to guide downstream generation tasks.
 
 ![Project Banner](assets/assetsAndBrief.jpeg)
 
-The system automatically extracts visual keyframes and synthesizes a comprehensive content brief to guide downstream generation tasks.
 
 ## Core Functionality
 
