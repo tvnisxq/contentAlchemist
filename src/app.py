@@ -2,8 +2,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 # Import CORS to allow cross-origin requests from the frontend
 from flask_cors import CORS
-# Import standard Python libraries for async operations, OS interactions, and system path handling
-import asyncio
+# Import standard Python libraries for OS interactions and system path handling
 import os
 import sys
 import logging
@@ -84,13 +83,15 @@ def analyze_video():
     data = request.json
     # Extract the YouTube URL from the data
     video_url = data.get('url')
+    # NEW: Extract the Style DNA preference (defaulting to Neutral if not provided)
+    style_dna = data.get('style_dna', 'Neutral and professional')
     
     # Validation: Check if a URL was provided
     if not video_url:
         return jsonify({"error": "No URL provided"}), 400
 
     # Checkpoint: Log that a new API request has been received
-    print(f"🚀 API Request received for: {video_url}")
+    print(f"🚀 API Request received for: {video_url} | Style: {style_dna[:30]}...")
     
     try:
         # Initialize the ContentAlchemist orchestrator
@@ -99,8 +100,9 @@ def analyze_video():
         # Checkpoint: Log that the alchemist instance is ready
         print("Alchemist instance initialized. Starting orchestration... ⏳")
 
-        # Run the asynchronous orchestration logic synchronously
-        result = asyncio.run(alchemist.orchestrate(video_url))
+        # FIX: RUN SYNCHRONOUSLY - REMOVED asyncio.run()
+        # Since alchemist_core.py is now synchronous, we call it directly like a normal function.
+        result = alchemist.orchestrate(video_url, style_dna)
         
         # Checkpoint: Log that the analysis process completed successfully
         print("Orchestration completed successfully! ✅")
