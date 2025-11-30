@@ -16,15 +16,16 @@ The system automatically extracts visual keyframes and synthesizes a comprehensi
 
 ## Core Functionality
 
-**Multimodal Ingestion Capabilities:** The system utilizes a bespoke MediaIngestionTool, integrated with yt-dlp and OpenCV, to facilitate the direct acquisition of video content and the extraction of visual context (keyframes). This capability ensures that the artificial intelligence analyzes the visual components of the presentation in conjunction with the auditory transcript, thereby achieving a holistic understanding of the source material.
+**▷ Multimodal Ingestion Capabilities:** 
+The system utilizes a bespoke MediaIngestionTool, integrated with yt-dlp and OpenCV, to facilitate the direct acquisition of video content and the extraction of visual context (keyframes). This capability ensures that the artificial intelligence analyzes the visual components of the presentation in conjunction with the auditory transcript, thereby achieving a holistic understanding of the source material.
 
-**Sequential Orchestration Strategy:** To ensure system stability and strict adherence to API rate limits—particularly within the constraints of free-tier access—the architecture employs a sequential orchestration pattern. This approach manages distinct computational tasks, such as research, drafting, and strategy formulation, in a linear progression rather than concurrent execution.
+**▷ Sequential Orchestration Strategy:** To ensure system stability and strict adherence to API rate limits—particularly within the constraints of free-tier access—the architecture employs a sequential orchestration pattern. This approach manages distinct computational tasks, such as research, drafting, and strategy formulation, in a linear progression rather than concurrent execution.
 
-**Context Compaction and Efficiency:** To mitigate the computational cost of repeatedly processing raw video data, the system generates a "Master Content Brief" upon initial ingestion. This lightweight JSON object functions as the definitive source of truth for all subsequent agents, thereby reducing redundancy and enhancing the consistency of the generated outputs.
+**▷ Context Compaction and Efficiency:** To mitigate the computational cost of repeatedly processing raw video data, the system generates a "Master Content Brief" upon initial ingestion. This lightweight JSON object functions as the definitive source of truth for all subsequent agents, thereby reducing redundancy and enhancing the consistency of the generated outputs.
 
-**Intelligent Visual Asset Selection:** The architecture includes an automated mechanism for extracting high-resolution screenshots at equidistant intervals. It subsequently employs selection logic to identify the optimal video frame for utilization as the primary visual asset, ensuring relevant imagery is available without reliance on external stock photography.
+**▷ Intelligent Visual Asset Selection:** The architecture includes an automated mechanism for extracting high-resolution screenshots at equidistant intervals. It subsequently employs selection logic to identify the optimal video frame for utilization as the primary visual asset, ensuring relevant imagery is available without reliance on external stock photography.
 
-**User Interface:** The application features a streamlined web dashboard that allows users to monitor generation results, observe real-time server logs, and retrieve generated assets efficiently.
+**▷ User Interface:** The application features a streamlined web dashboard that allows users to monitor generation results, observe real-time server logs, and retrieve generated assets efficiently.
 
 ## System Architecture
 
