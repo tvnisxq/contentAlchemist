@@ -1,0 +1,2 @@
+{"id": "test_001_tech_blog", "input": "Video about Python Asyncio", "expected_keywords": ["python", "async", "await"], "min_words": 5, "style_sample": "I love writing code that runs fast."}
+{"id": "test_002_linkedin", "input": "Video about Startup Growth", "expected_keywords": ["growth", "scale"], "min_words": 5, "style_sample": "Hustle is the key to success."}
