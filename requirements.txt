@@ -8,3 +8,8 @@ pandas
 scikit-learn
 flask
 flask-cors
+pymupdf
+faiss-cpu
+sentence-transformers
+numpy
+gunicorn
