@@ -97,6 +97,8 @@ def analyze_video():
     style_dna = data.get('style_dna', 'Neutral and professional')
     # NEW: Extract the provided API Key
     api_key = data.get('api_key')
+    # NEW: Extract optional YouTube Cookie
+    cookie = data.get('cookie')
     
     # Validation: Check if a URL was provided
     if not video_url:
@@ -116,7 +118,7 @@ def analyze_video():
 
         # FIX: RUN SYNCHRONOUSLY - REMOVED asyncio.run()
         # Since alchemist_core.py is now synchronous, we call it directly like a normal function.
-        result = alchemist.orchestrate(video_url, style_dna)
+        result = alchemist.orchestrate(video_url, style_dna, youtube_cookie=cookie)
         
         # Checkpoint: Log that the analysis process completed successfully
         print("Orchestration completed successfully! ✅")

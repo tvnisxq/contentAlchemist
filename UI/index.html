@@ -200,7 +200,19 @@
                     <label class="text-xs font-bold text-stone-400 uppercase tracking-wide mb-2 block">Source
                         Material</label>
                     <input type="text" id="videoUrl" placeholder="Paste YouTube URL..."
-                        class="w-full bg-stone-50 border border-stone-300 rounded-md p-2.5 text-sm focus:outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500 transition-all text-stone-800 placeholder-stone-400 shadow-inner">
+                        class="w-full bg-stone-50 border border-stone-300 rounded-md p-2.5 text-sm focus:outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500 transition-all text-stone-800 placeholder-stone-400 shadow-inner mb-4">
+                </div>
+
+                <div>
+                    <label
+                        class="text-xs font-bold text-stone-400 uppercase tracking-wide mb-2 block flex items-center justify-between">
+                        <span>YouTube Cookies (Optional)</span>
+                        <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp"
+                            target="_blank" class="text-[10px] text-stone-400 hover:text-stone-600 underline">How?</a>
+                    </label>
+                    <textarea id="youtubeCookie"
+                        placeholder="Paste youtube.com cookies here if video fails to ingest due to bot detection..."
+                        class="w-full h-16 bg-stone-50 border border-stone-300 rounded-md p-2.5 text-xs focus:outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500 transition-all text-stone-800 placeholder-stone-400 shadow-inner resize-y"></textarea>
                 </div>
 
                 <div>
@@ -321,6 +333,7 @@
         async function startAlchemy() {
             const apiKey = document.getElementById('apiKey').value;
             const url = document.getElementById('videoUrl').value;
+            const cookie = document.getElementById('youtubeCookie').value;
             const stylePreset = document.getElementById('stylePreset').value;
             let stylePrompt = stylePreset;
             if (stylePreset === 'custom') {
@@ -347,7 +360,7 @@
                 const response = await fetch('/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: url, style_dna: stylePrompt, api_key: apiKey })
+                    body: JSON.stringify({ url: url, style_dna: stylePrompt, api_key: apiKey, cookie: cookie })
                 });
 
                 const data = await response.json();

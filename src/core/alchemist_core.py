@@ -183,13 +183,13 @@ class ContentAlchemist:
         # If all retries are exhausted, raise a final exception
         raise Exception("❌ Max retries exceeded for Gemini API")
 
-    def ingest_and_analyze(self, video_url: str):
+    def ingest_and_analyze(self, video_url: str, youtube_cookie: str = None):
         """
         Stage 1: Download video, extract keyframes, and generate Master Brief.
         This establishes the context for all downstream tasks.
         """
         # Use the ingestion tool to download video and get 4 frames
-        video_path, title, frames = self.ingest_tool.process_video(video_url)
+        video_path, title, frames = self.ingest_tool.process_video(video_url, youtube_cookie)
         # Checkpoint: Confirm local processing is done
         print("✓ [Core] Local ingestion complete.")
 
@@ -354,13 +354,13 @@ class ContentAlchemist:
             with open(filepath, "w", encoding="utf-8") as f: f.write(content)
             print(f"   -> Saved {agent_name} to: {filepath}")
 
-    def orchestrate(self, video_url: str, style_dna: str = "Neutral"):
+    def orchestrate(self, video_url: str, style_dna: str = "Neutral", youtube_cookie: str = None):
         """
         Main Pipeline function. 
         Orchestrates: Ingest -> Brief -> Sequential Agents -> Save.
         """
         # Step 1: Ingest Video and Generate Master Brief (Synchronous)
-        data = self.ingest_and_analyze(video_url)
+        data = self.ingest_and_analyze(video_url, youtube_cookie)
         brief_obj = data['brief']
         # Convert brief object to string for prompts
         brief_str = json.dumps(brief_obj)

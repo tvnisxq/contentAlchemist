@@ -19,7 +19,7 @@ class MediaIngestionTool:
         os.makedirs(self.output_dir, exist_ok=True)
         print(f"🔧 Ingestion Tool Initialized. Outputting to: {self.output_dir}")
 
-    def process_video(self, url: str) -> Tuple[str, str, List[Dict]]:
+    def process_video(self, url: str, youtube_cookie: str = None) -> Tuple[str, str, List[Dict]]:
         """
         Main entry point: Downloads video, extracts metadata, and gets keyframes.
         Returns: (video_path, video_title, list_of_frames)
@@ -27,14 +27,14 @@ class MediaIngestionTool:
         print(f"🔧 Tool: Processing {url}...")
         
         # 1. Download
-        video_path, title = self._download_video(url)
+        video_path, title = self._download_video(url, youtube_cookie)
         
         # 2. Extract Keyframes (Dynamically get 4 frames regardless of duration)
         frames = self._extract_keyframes(video_path, num_frames=4)
         
         return video_path, title, frames
 
-    def _download_video(self, url: str) -> Tuple[str, str]:
+    def _download_video(self, url: str, youtube_cookie: str = None) -> Tuple[str, str]:
         """
         Downloads video and audio using yt-dlp.
         Returns path to the file.
@@ -57,6 +57,16 @@ class MediaIngestionTool:
             }
         }
 
+        cookie_file_path = None
+        if youtube_cookie:
+            import tempfile
+            # Create a temporary file to store the cookie
+            fd, cookie_file_path = tempfile.mkstemp(suffix=".txt")
+            with os.fdopen(fd, 'w') as f:
+                f.write(youtube_cookie)
+            ydl_opts['cookiefile'] = cookie_file_path
+            print(f"   🍪 Loaded user-provided YouTube cookies")
+
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
@@ -65,6 +75,10 @@ class MediaIngestionTool:
         except Exception as e:
             print(f"❌ Error downloading video: {e}")
             raise
+        finally:
+            if cookie_file_path and os.path.exists(cookie_file_path):
+                try: os.remove(cookie_file_path)
+                except: pass
 
     def _extract_keyframes(self, video_path: str, num_frames: int = 4) -> List[Dict]:
         """
