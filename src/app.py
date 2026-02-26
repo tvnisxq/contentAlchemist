@@ -44,7 +44,7 @@ log_checkpoint("Successfully imported ContentAlchemist core logic! ✅")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # ContentAlchemist/
 
 # Path to the UI folder containing index.html
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'ui')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'UI')
 # Path to the assets folder for AI-generated images
 ASSETS_DIR = os.path.join(BASE_DIR, 'output', 'assets')
 # Path to the temp_media folder for extracted screenshots
