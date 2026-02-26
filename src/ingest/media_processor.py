@@ -40,11 +40,10 @@ class MediaIngestionTool:
         Returns path to the file.
         """
         ydl_opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+            'format': 'best[ext=mp4]/best',
             'outtmpl': f'{self.output_dir}/%(id)s.%(ext)s',
             'quiet': True,
             'overwrites': True,
-            'format_sort': ['res:720', 'ext:mp4:m4a'],
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             },
