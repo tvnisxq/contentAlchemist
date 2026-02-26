@@ -66,6 +66,16 @@ def home():
     # Returns the main dashboard HTML file
     return send_from_directory(TEMPLATE_DIR, 'index.html')
 
+@app.route('/debug')
+def debug_paths():
+    return jsonify({
+        "cwd": os.getcwd(),
+        "base_dir": BASE_DIR,
+        "template_dir": TEMPLATE_DIR,
+        "base_dir_contents": os.listdir(BASE_DIR) if os.path.exists(BASE_DIR) else "NOT FOUND",
+        "template_dir_contents": os.listdir(TEMPLATE_DIR) if os.path.exists(TEMPLATE_DIR) else "NOT FOUND",
+    })
+
 # Route: Serve generated assets (images) from the output/assets folder
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
