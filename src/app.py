@@ -76,6 +76,47 @@ def debug_paths():
         "template_dir_contents": os.listdir(TEMPLATE_DIR) if os.path.exists(TEMPLATE_DIR) else "NOT FOUND",
     })
 
+@app.route('/debug_yt', methods=['POST'])
+def debug_yt():
+    import yt_dlp
+    import traceback
+    data = request.json
+    url = data.get('url', 'https://youtu.be/xa17zHJhNhA')
+    cookie = data.get('cookie')
+    
+    ydl_opts = {
+        'format': 'best[ext=mp4]/best',
+        'quiet': False,
+        'verbose': True,
+        'simulate': True, # Don't actually download, just extract info
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios', 'web'],
+                'player_skip': ['webpage', 'configs', 'js']
+            }
+        }
+    }
+    
+    cookie_file_path = None
+    if cookie:
+        import tempfile
+        fd, cookie_file_path = tempfile.mkstemp(suffix=".txt")
+        with os.fdopen(fd, 'w') as f:
+            f.write(cookie)
+        ydl_opts['cookiefile'] = cookie_file_path
+        
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            formats = [{"format_id": f.get('format_id'), "ext": f.get('ext'), "resolution": f.get('resolution')} for f in info.get('formats', [])]
+            return jsonify({"status": "SUCCESS", "title": info.get('title'), "formats": formats})
+    except Exception as e:
+        return jsonify({"status": "ERROR", "error": str(e), "traceback": traceback.format_exc()}), 500
+    finally:
+        if cookie_file_path and os.path.exists(cookie_file_path):
+            try: os.remove(cookie_file_path)
+            except: pass
+
 # Route: Serve generated assets (images) from the output/assets folder
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
