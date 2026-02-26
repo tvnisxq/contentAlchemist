@@ -83,19 +83,23 @@ def analyze_video():
     data = request.json
     # Extract the YouTube URL from the data
     video_url = data.get('url')
-    # NEW: Extract the Style DNA preference (defaulting to Neutral if not provided)
+    # Extract the Style DNA preference (defaulting to Neutral if not provided)
     style_dna = data.get('style_dna', 'Neutral and professional')
+    # NEW: Extract the provided API Key
+    api_key = data.get('api_key')
     
     # Validation: Check if a URL was provided
     if not video_url:
         return jsonify({"error": "No URL provided"}), 400
+    if not api_key:
+        return jsonify({"error": "No API Key provided"}), 400
 
     # Checkpoint: Log that a new API request has been received
     print(f"🚀 API Request received for: {video_url} | Style: {style_dna[:30]}...")
     
     try:
         # Initialize the ContentAlchemist orchestrator
-        alchemist = ContentAlchemist()
+        alchemist = ContentAlchemist(api_key=api_key)
         
         # Checkpoint: Log that the alchemist instance is ready
         print("Alchemist instance initialized. Starting orchestration... ⏳")
