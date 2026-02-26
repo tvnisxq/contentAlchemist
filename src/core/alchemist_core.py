@@ -43,19 +43,8 @@ print("✓ [Core] MediaIngestionTool imported.")
 
 # Load environment variables from the .env file into the system environment
 load_dotenv()
-# Retrieve the Google API key from environment variables
-API_KEY = os.getenv("GOOGLE_API_KEY")
-
-# Validate that the API Key exists
-if not API_KEY:
-    # Raise an error if the key is missing to stop execution immediately
-    raise ValueError("❌ GOOGLE_API_KEY not found in .env file")
-else:
-    # Checkpoint: Confirm API key is present
-    print("API key configured succesfully!✅")
-
-# Configure the Gemini SDK with the provided API key
-genai.configure(api_key=API_KEY)
+# Retrieve the Google API key from environment variables (Optional fallback)
+FALLBACK_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 class ContentAlchemist:
     """
@@ -63,7 +52,20 @@ class ContentAlchemist:
     RUNNING IN SYNCHRONOUS MODE to ensure compatibility with Flask on Windows.
     This class manages the lifecycle of downloading, analyzing, and generating content.
     """
-    def __init__(self):
+    def __init__(self, api_key=None):
+        # Use provided key or fallback to env variable
+        self.api_key = api_key or FALLBACK_API_KEY
+        
+        # Validate that the API Key exists
+        if not self.api_key:
+            # Raise an error if the key is missing to stop execution immediately
+            raise ValueError("❌ GOOGLE_API_KEY not provided")
+        else:
+            # Checkpoint: Confirm API key is present
+            print("API key configured succesfully!✅")
+
+        # Configure the Gemini SDK with the provided API key
+        genai.configure(api_key=self.api_key)
         # HARDCODED: Use Gemini 2.0 Flash as the model
         self.model_name = 'gemini-2.0-flash'
         # Checkpoint: Print which model version is being used
