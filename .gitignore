@@ -1,1 +1,22 @@
-.gitignore
+# Environment Variables
+.env
+
+# Virtual Environment
+venv/
+capstone_venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Output & Temp Files
+output/
+temp_media/
+*.jpg
+*.jpeg
+*.png
+
+# IDE Settings
+.vscode/
+.idea/
