@@ -20,3 +20,13 @@ temp_media/
 # IDE Settings
 .vscode/
 .idea/
+
+.env
+venv/
+.venv/
+capstone_venv/
+__pycache__/
+*.pyc
+output/
+.vercel
+.DS_Store

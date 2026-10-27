@@ -1,15 +1,3 @@
-google-generativeai>=0.8.3
+google-genai
 python-dotenv
-yt-dlp
-opencv-python
-asyncio
-rich
-pandas
-scikit-learn
 flask
-flask-cors
-pymupdf
-faiss-cpu
-sentence-transformers
-numpy
-gunicorn
