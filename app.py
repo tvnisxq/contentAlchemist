@@ -23,6 +23,7 @@ import re
 import time
 import urllib.parse
 import urllib.request
+from providers.factory import get_provider
 from concurrent.futures import ThreadPoolExecutor
 
 from flask import Flask, jsonify, request, send_from_directory
@@ -164,7 +165,7 @@ def build_brief(client, watch_url: str):
     return clean_and_parse_json(generate(client, contents, json_mode=True))
 
 
-def run_text_worker(client, agent_name, task, brief_str, style_dna):
+def run_text_worker(provider, agent_name, task, brief_str, style_dna):
     prompt = f"""
     Role: {agent_name} Agent.
 
@@ -189,7 +190,7 @@ def run_text_worker(client, agent_name, task, brief_str, style_dna):
     try:
         return {
             "type": agent_name,
-            "content": clean_text_output(generate(client, prompt)),
+            "content": clean_text_output(provider.generate_text(prompt)),
         }
     except Exception as exc:  # one failed agent shouldn't discard the others
         return {
@@ -212,26 +213,81 @@ TEXT_TASKS = [
 
 
 def orchestrate(api_key: str, video_url: str, style_dna: str):
+
+    # Extract the YouTube video ID from the supplied URL.
     video_id = extract_video_id(video_url)
+
     if not video_id:
         raise ValueError("That doesn't look like a valid YouTube URL.")
+
+    # Reconstruct a standardized YouTube URL.
     watch_url = f"https://www.youtube.com/watch?v={video_id}"
+
+    # ---------------------------------------------------------
+    # GEMINI: Still responsible for video analysis for now.
+    # ---------------------------------------------------------
 
     client = genai.Client(api_key=api_key)
 
+    # logging here
+    app.logger.info("Starting Gemini video analysis")
+
+    # Generate the master brief from the YouTube video.
     brief = build_brief(client, watch_url)
+
+    # logging here
+    app.logger.info("Gemini video analysis completed")
+
+
+    # Fetch the video title, falling back to the title from the brief.
     title = fetch_title(watch_url) or brief.get("title") or "Untitled video"
+
+    # Convert the brief into JSON text for the writer agents.
     brief_str = json.dumps(brief)
 
+    # logging here
+    app.logger.info("Initializing Groq provider") # logging here
+
+    # ---------------------------------------------------------
+    # GROQ: Responsible for text generation.
+    # ---------------------------------------------------------
+
+    # Factory creates the configured provider.
+    provider = get_provider()
+
+    # logging here
+    app.logger.info("Starting Groq writer agents")
+
+    # Run all three writer agents concurrently.
     with ThreadPoolExecutor(max_workers=3) as pool:
+
         futures = [
-            pool.submit(run_text_worker, client, name, task, brief_str, style_dna)
+            # Pass the Groq provider instead of the Gemini client.
+            pool.submit(
+                run_text_worker,
+                provider,
+                name,
+                task,
+                brief_str,
+                style_dna
+            )
             for name, task in TEXT_TASKS
         ]
+
+        # Collect the results from all three agents.
         text_results = [f.result() for f in futures]
 
+    # ---------------------------------------------------------
+    # EXISTING IMAGE AND RESPONSE LOGIC: Unchanged.
+    # ---------------------------------------------------------
+
     thumbnail = best_thumbnail(video_id)
-    image_result = {"type": "Image", "path": thumbnail, "url": thumbnail}
+
+    image_result = {
+        "type": "Image",
+        "path": thumbnail,
+        "url": thumbnail
+    }
 
     frames = [
         {
@@ -242,10 +298,13 @@ def orchestrate(api_key: str, video_url: str, style_dna: str):
     ]
 
     return {
-        "meta": {"title": title, "brief": brief, "frames": frames},
+        "meta": {
+            "title": title,
+            "brief": brief,
+            "frames": frames
+        },
         "results": text_results + [image_result],
     }
-
 
 # --------------------------------------------------------------------------
 # Routes
