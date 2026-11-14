@@ -41,7 +41,7 @@ PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 
 # Check Google's current model list and change this in the Vercel dashboard
 # (Settings -> Environment Variables) if a model is retired.
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 FALLBACK_API_KEY = os.environ.get("GOOGLE_API_KEY")
 
 app = Flask(__name__)
